@@ -60,7 +60,10 @@ export default function QueryPage() {
         estimatedRows: data.estimatedRows,
       };
       setGeneration(gen);
-      setResult(data.result);
+
+      // Execute the SQL on the client where sql.js is available
+      const queryResult = await executeQuery(data.sql);
+      setResult(queryResult);
       setActiveView("table");
 
       const historyItem: QueryHistoryItem = {
@@ -69,8 +72,8 @@ export default function QueryPage() {
         sql: data.sql,
         explanation: data.explanation,
         timestamp: Date.now(),
-        rowCount: data.result.rowCount,
-        executionTimeMs: data.result.executionTimeMs,
+        rowCount: queryResult.rowCount,
+        executionTimeMs: queryResult.executionTimeMs,
         starred: false,
       };
       setHistory((prev) => [historyItem, ...prev]);

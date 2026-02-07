@@ -1,8 +1,8 @@
 import { generateText, Output } from "ai";
 import { z } from "zod";
 import { getSchemaDescription } from "@/lib/demo-database";
-import { executeQuery } from "@/lib/query-executor";
 import { validateQuery } from "@/lib/query-validator";
+import { executeQuery } from "@/lib/query-executor"; // Declared the executeQuery variable
 
 const sqlResultSchema = z.object({
   sql: z.string().describe("The generated SQL query"),
@@ -39,7 +39,6 @@ async function retryWithBackoff<T>(
       
       if (attempt < maxRetries) {
         const delay = initialDelay * Math.pow(2, attempt);
-        console.log(`[v0] Retry attempt ${attempt + 1} after ${delay}ms`);
         await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
@@ -60,8 +59,6 @@ export async function POST(req: Request) {
     }
 
     const schemaDescription = getSchemaDescription();
-
-    console.log("[v0] Generating SQL for question:", question);
 
     const { output } = await retryWithBackoff(async () => {
       return await generateText({
@@ -94,19 +91,15 @@ Generate the SQL query and explain what it does in simple terms.`,
     });
 
     if (!output) {
-      console.error("[v0] No output received from AI");
       return Response.json(
         { error: "Failed to generate SQL query. Please try again." },
         { status: 500 }
       );
     }
 
-    console.log("[v0] Generated SQL:", output.sql);
-
     // Validate the generated SQL
     const validation = validateQuery(output.sql);
     if (!validation.valid) {
-      console.error("[v0] Query validation failed:", validation.error);
       return Response.json(
         {
           error: `Generated unsafe query: ${validation.error}`,
@@ -117,21 +110,15 @@ Generate the SQL query and explain what it does in simple terms.`,
       );
     }
 
-    // Execute the query
-    console.log("[v0] Executing validated query");
-    const queryResult = await executeQuery(output.sql);
-    console.log("[v0] Query executed successfully, rows:", queryResult.rowCount);
-
+    // Return the validated SQL without executing it
+    // Execution happens on the client where sql.js WASM is available
     return Response.json({
       sql: output.sql,
       explanation: output.explanation,
       tablesUsed: output.tablesUsed,
       estimatedRows: output.estimatedRows,
-      result: queryResult,
     });
   } catch (error) {
-    console.error("[v0] Query generation error:", error);
-    
     // Provide more specific error messages
     let errorMessage = "An unexpected error occurred. Please try again.";
     
