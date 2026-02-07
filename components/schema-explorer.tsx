@@ -17,7 +17,11 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { SchemaTable, ForeignKey } from "@/lib/demo-database";
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch schema");
+  return res.json();
+};
 
 function getColumnIcon(type: string, isPk: boolean) {
   if (isPk) return <Key className="h-3 w-3 text-yellow-500" />;
@@ -54,7 +58,7 @@ export function SchemaExplorer() {
     );
   }
 
-  if (error || !data) {
+  if (error || !data || !data.tables) {
     return (
       <p className="py-4 text-center text-xs text-muted-foreground">
         Failed to load schema

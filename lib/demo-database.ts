@@ -8,7 +8,10 @@ let db: Database | null = null;
 export async function getDatabase(): Promise<Database> {
   if (db) return db;
 
-  const SQL = await initSqlJs();
+  const SQL = await initSqlJs({
+    locateFile: (file: string) =>
+      `https://sql.js.org/dist/${file}`,
+  });
   db = new SQL.Database();
 
   // Create tables
