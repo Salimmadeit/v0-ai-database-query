@@ -142,9 +142,9 @@ export function ResultVisualization({ result, activeView, onViewChange }: Result
     if (!active || !payload?.length) return null;
     return (
       <div className="rounded-lg border border-border bg-card p-3 shadow-lg">
-        <p className="mb-1 text-xs font-medium text-foreground">{label}</p>
+        <p className="mb-1.5 text-sm font-medium text-foreground">{label}</p>
         {payload.map((entry, i) => (
-          <p key={i} className="text-xs" style={{ color: entry.color }}>
+          <p key={i} className="text-sm" style={{ color: entry.color }}>
             {entry.name}: {typeof entry.value === "number" ? entry.value.toLocaleString() : entry.value}
           </p>
         ))}
@@ -162,9 +162,9 @@ export function ResultVisualization({ result, activeView, onViewChange }: Result
             variant={activeView === type ? "secondary" : "ghost"}
             size="sm"
             onClick={() => onViewChange(type)}
-            className="h-8 gap-1.5 text-xs"
+            className="h-9 gap-2 text-sm"
           >
-            <Icon className="h-3.5 w-3.5" />
+            <Icon className="h-4 w-4" />
             {label}
           </Button>
         ))}

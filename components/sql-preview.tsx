@@ -56,13 +56,13 @@ export function SQLPreview({
           </p>
           <div className="flex flex-wrap gap-2">
             {generation.tablesUsed.map((table) => (
-              <Badge key={table} variant="secondary" className="gap-1 font-mono text-xs">
-                <TableIcon className="h-3 w-3" />
+              <Badge key={table} variant="secondary" className="gap-1.5 font-mono text-sm px-2.5 py-1">
+                <TableIcon className="h-3.5 w-3.5" />
                 {table}
               </Badge>
             ))}
-            <Badge variant="outline" className="gap-1 text-xs">
-              <Rows3 className="h-3 w-3" />
+            <Badge variant="outline" className="gap-1.5 text-sm px-2.5 py-1">
+              <Rows3 className="h-3.5 w-3.5" />
               ~{generation.estimatedRows} rows
             </Badge>
           </div>
@@ -71,10 +71,10 @@ export function SQLPreview({
 
       {/* SQL Editor */}
       <div className="overflow-hidden rounded-lg border border-border">
-        <div className="flex items-center justify-between border-b border-border bg-muted/50 px-4 py-2">
+        <div className="flex items-center justify-between border-b border-border bg-muted/50 px-4 py-2.5">
           <div className="flex items-center gap-2">
             <Code2 className="h-4 w-4 text-primary" />
-            <span className="text-xs font-medium text-foreground">
+            <span className="text-sm font-medium text-foreground">
               Generated SQL
             </span>
           </div>
@@ -83,16 +83,16 @@ export function SQLPreview({
               variant="ghost"
               size="sm"
               onClick={handleCopy}
-              className="h-7 gap-1 text-xs"
+              className="h-8 gap-1.5 text-sm"
             >
               {copied ? (
                 <>
-                  <Check className="h-3 w-3" />
+                  <Check className="h-3.5 w-3.5" />
                   Copied
                 </>
               ) : (
                 <>
-                  <Copy className="h-3 w-3" />
+                  <Copy className="h-3.5 w-3.5" />
                   Copy
                 </>
               )}
@@ -102,9 +102,9 @@ export function SQLPreview({
               size="sm"
               onClick={() => onReExecute(displaySql)}
               disabled={isExecuting}
-              className="h-7 gap-1 text-xs"
+              className="h-8 gap-1.5 text-sm"
             >
-              <Play className="h-3 w-3" />
+              <Play className="h-3.5 w-3.5" />
               Run
             </Button>
           </div>
@@ -120,13 +120,13 @@ export function SQLPreview({
 
       {/* Execution stats */}
       {result && (
-        <div className="flex items-center gap-4 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Clock className="h-3 w-3" />
+        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <span className="flex items-center gap-1.5">
+            <Clock className="h-3.5 w-3.5" />
             {result.executionTimeMs}ms
           </span>
-          <span className="flex items-center gap-1">
-            <Rows3 className="h-3 w-3" />
+          <span className="flex items-center gap-1.5">
+            <Rows3 className="h-3.5 w-3.5" />
             {result.rowCount} row{result.rowCount !== 1 ? "s" : ""} returned
           </span>
           {result.rowCount > 1000 && (

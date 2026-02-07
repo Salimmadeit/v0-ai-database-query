@@ -128,10 +128,10 @@ export function ResultsTable({ result }: ResultsTableProps) {
               {result.columns.map((col) => (
                 <TableHead
                   key={col}
-                  className="cursor-pointer select-none whitespace-nowrap text-xs font-medium"
+                  className="cursor-pointer select-none whitespace-nowrap text-sm font-medium"
                   onClick={() => handleSort(col)}
                 >
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1.5">
                     {col}
                     <SortIcon column={col} />
                   </span>
@@ -171,7 +171,7 @@ export function ResultsTable({ result }: ResultsTableProps) {
         </Table>
       </div>
 
-      <p className="text-xs text-muted-foreground">
+      <p className="text-sm text-muted-foreground">
         Showing {filteredAndSorted.length} of {result.rowCount} row
         {result.rowCount !== 1 ? "s" : ""}
         {filterText && ` (filtered)`}

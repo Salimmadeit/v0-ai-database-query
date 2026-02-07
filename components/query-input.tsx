@@ -45,7 +45,7 @@ export function QueryInput({ onSubmit, isLoading }: QueryInputProps) {
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Ask a question about your data..."
-            className="h-14 w-full rounded-lg border border-border bg-card pl-12 pr-32 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary font-sans"
+            className="h-14 w-full rounded-lg border border-border bg-card pl-12 pr-32 text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary font-sans"
             disabled={isLoading}
           />
           <div className="absolute right-2 flex items-center gap-2">
@@ -72,14 +72,14 @@ export function QueryInput({ onSubmit, isLoading }: QueryInputProps) {
       </form>
 
       <div className="flex flex-wrap gap-2">
-        <span className="text-xs text-muted-foreground py-1">Try:</span>
+        <span className="text-sm text-muted-foreground py-1.5">Try:</span>
         {SUGGESTED_QUERIES.map((suggestion) => (
           <button
             key={suggestion}
             type="button"
             onClick={() => handleSuggestion(suggestion)}
             disabled={isLoading}
-            className="rounded-md border border-border bg-card px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-foreground disabled:opacity-50"
+            className="rounded-md border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-foreground disabled:opacity-50"
           >
             {suggestion}
           </button>

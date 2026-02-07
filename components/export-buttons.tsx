@@ -52,19 +52,19 @@ export function ExportButtons({ result }: ExportButtonsProps) {
         variant="outline"
         size="sm"
         onClick={exportCSV}
-        className="h-8 gap-1.5 text-xs bg-transparent"
+        className="h-9 gap-2 text-sm bg-transparent"
       >
-        <FileSpreadsheet className="h-3.5 w-3.5" />
-        CSV
+        <FileSpreadsheet className="h-4 w-4" />
+        Export CSV
       </Button>
       <Button
         variant="outline"
         size="sm"
         onClick={exportJSON}
-        className="h-8 gap-1.5 text-xs bg-transparent"
+        className="h-9 gap-2 text-sm bg-transparent"
       >
-        <FileJson className="h-3.5 w-3.5" />
-        JSON
+        <FileJson className="h-4 w-4" />
+        Export JSON
       </Button>
     </div>
   );

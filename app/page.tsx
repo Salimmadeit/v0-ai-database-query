@@ -127,19 +127,19 @@ export default function QueryPage() {
             <Zap className="h-4 w-4 text-primary" />
           </div>
           <div>
-            <h1 className="text-sm font-semibold text-foreground">
+            <h1 className="text-base font-semibold text-foreground">
               QueryLens
             </h1>
-            <p className="text-[10px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               AI-Powered Database Explorer
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 rounded-md bg-muted px-2.5 py-1">
-            <Shield className="h-3 w-3 text-primary" />
-            <span className="text-[10px] font-medium text-foreground">
+          <div className="flex items-center gap-2 rounded-md bg-muted px-3 py-1.5">
+            <Shield className="h-3.5 w-3.5 text-primary" />
+            <span className="text-xs font-medium text-foreground">
               Read-Only Mode
             </span>
           </div>
@@ -234,22 +234,22 @@ export default function QueryPage() {
               onValueChange={(v) => setSidebarTab(v as "schema" | "history")}
               className="flex flex-1 flex-col"
             >
-              <TabsList className="grid w-full grid-cols-2 rounded-none border-b border-border bg-transparent h-10">
+              <TabsList className="grid w-full grid-cols-2 rounded-none border-b border-border bg-transparent h-11">
                 <TabsTrigger
                   value="schema"
-                  className="gap-1.5 rounded-none text-xs data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none"
+                  className="gap-2 rounded-none text-sm data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none"
                 >
-                  <Database className="h-3.5 w-3.5" />
+                  <Database className="h-4 w-4" />
                   Schema
                 </TabsTrigger>
                 <TabsTrigger
                   value="history"
-                  className="gap-1.5 rounded-none text-xs data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none"
+                  className="gap-2 rounded-none text-sm data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none"
                 >
-                  <History className="h-3.5 w-3.5" />
+                  <History className="h-4 w-4" />
                   History
                   {history.length > 0 && (
-                    <span className="ml-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium text-primary-foreground">
+                    <span className="ml-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-medium text-primary-foreground">
                       {history.length}
                     </span>
                   )}
@@ -278,9 +278,9 @@ export default function QueryPage() {
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col items-center gap-1 rounded-lg border border-border bg-card px-4 py-3">
+    <div className="flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-3">
       <span className="text-lg font-semibold text-primary">{value}</span>
-      <span className="text-[10px] text-muted-foreground">{label}</span>
+      <span className="text-xs text-muted-foreground">{label}</span>
     </div>
   );
 }
