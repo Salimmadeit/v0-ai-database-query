@@ -18,12 +18,8 @@ import { ResultVisualization } from "@/components/result-visualization";
 import { ExportButtons } from "@/components/export-buttons";
 import { SchemaExplorer } from "@/components/schema-explorer";
 import { QueryHistory } from "@/components/query-history";
-import type {
-  QueryResult,
-  SQLGenerationResult,
-  QueryHistoryItem,
-  VisualizationType,
-} from "@/lib/types";
+import { executeQuery } from "@/lib/query-executor";
+import { SQLGenerationResult, QueryResult, QueryHistoryItem, VisualizationType } from "@/types";
 
 export default function QueryPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -92,21 +88,8 @@ export default function QueryPage() {
     setError(null);
 
     try {
-      const response = await fetch("/api/execute-sql", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sql }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Failed to execute query");
-        setIsExecuting(false);
-        return;
-      }
-
-      setResult(data.result);
+      const result = await executeQuery(sql);
+      setResult(result);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unexpected error occurred"
