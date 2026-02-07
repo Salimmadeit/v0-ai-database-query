@@ -9,4 +9,29 @@ instrumentation-client.ts
 node_modules/
 .next/
 .env*.local
+.env.local
 .DS_Store
+
+# Dependency lock files
+pnpm-lock.yaml
+
+# Build outputs
+out/
+dist/
+build/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.log
+*.swp
+*.swo
+*~
