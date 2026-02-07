@@ -21,6 +21,7 @@ import { QueryHistory } from "@/components/query-history";
 import { executeQuery } from "@/lib/query-executor";
 import { SQLGenerationResult, QueryResult, QueryHistoryItem, VisualizationType } from "@/types";
 
+// Main query page component for database exploration
 export default function QueryPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isExecuting, setIsExecuting] = useState(false);
