@@ -84,7 +84,15 @@ RULES:
 
 User question: ${question}
 
-Generate the SQL query and explain what it does in simple terms.`,
+Generate the SQL query and provide a clear, natural language explanation that:
+- Describes what data is being retrieved in plain English
+- Explains any filters or conditions being applied (e.g., "only active employees", "salaries above average")
+- Mentions how results are sorted if applicable (e.g., "from highest to lowest salary")
+- Avoids technical jargon - speak as if explaining to a non-technical person
+- Focuses on what the user will see in the results, not how the query works internally
+- Keeps the explanation concise (2-3 sentences maximum)
+
+Example: Instead of "This query joins employees and departments tables using a subquery for average calculation", say "This shows all currently active employees who earn more than the company average, including their department, sorted from highest to lowest salary."`,
           },
         ],
       });
