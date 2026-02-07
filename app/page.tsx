@@ -1,7 +1,11 @@
 import { QueryPageClient } from "@/components/query-page-client";
 import { AuthHeader } from "@/components/auth/auth-header";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 export default async function QueryPage() {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
   return (
     <div className="flex h-screen flex-col">
       {/* Header */}
@@ -25,7 +29,7 @@ export default async function QueryPage() {
         </div>
       </header>
 
-      <QueryPageClient />
+      <QueryPageClient userId={user?.id} />
     </div>
   );
 }

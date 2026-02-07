@@ -14,6 +14,15 @@ export interface QueryHistoryItem {
   rowCount: number;
   executionTimeMs: number;
   starred: boolean;
+  userId?: string; // Optional: tracks which user created this query
+}
+
+export interface SavedDemo {
+  id: string;
+  userId?: string; // Optional: tracks demo creator
+  query: QueryHistoryItem;
+  createdAt: number;
+  isPublic: boolean;
 }
 
 export interface SQLGenerationResult {

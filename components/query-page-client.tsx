@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   Database,
   History,
@@ -17,11 +17,12 @@ import { ResultVisualization } from "@/components/result-visualization";
 import { ExportButtons } from "@/components/export-buttons";
 import { SchemaExplorer } from "@/components/schema-explorer";
 import { QueryHistory } from "@/components/query-history";
+import { ShareDemoDialog } from "@/components/share-demo-dialog";
 import { executeQuery } from "@/lib/query-executor";
 import { SQLGenerationResult, QueryResult, QueryHistoryItem, VisualizationType } from "@/lib/types";
 
 // Client component for database exploration
-export function QueryPageClient() {
+export function QueryPageClient({ userId }: { userId?: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isExecuting, setIsExecuting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -75,6 +76,7 @@ export function QueryPageClient() {
         rowCount: queryResult.rowCount,
         executionTimeMs: queryResult.executionTimeMs,
         starred: false,
+        userId, // Track which user created this query
       };
       setHistory((prev) => [historyItem, ...prev]);
     } catch (err) {
@@ -152,7 +154,12 @@ export function QueryPageClient() {
               <h2 className="text-sm font-medium text-foreground">
                 Results
               </h2>
-              <ExportButtons result={result} />
+              <div className="flex items-center gap-2">
+                {history.length > 0 && (
+                  <ShareDemoDialog query={history[0]} userId={userId} />
+                )}
+                <ExportButtons result={result} />
+              </div>
             </div>
 
             <ResultVisualization
