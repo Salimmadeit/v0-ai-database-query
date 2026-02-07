@@ -53,6 +53,8 @@ export default function QueryPage() {
         return;
       }
 
+      console.log("[v0] Received SQL from server:", data.sql);
+      
       const gen: SQLGenerationResult = {
         sql: data.sql,
         explanation: data.explanation,
@@ -62,7 +64,10 @@ export default function QueryPage() {
       setGeneration(gen);
 
       // Execute the SQL on the client where sql.js is available
+      console.log("[v0] Executing query on client");
       const queryResult = await executeQuery(data.sql);
+      console.log("[v0] Query executed successfully, rows:", queryResult.rowCount, "data:", queryResult.data);
+      
       setResult(queryResult);
       setActiveView("table");
 
@@ -78,6 +83,7 @@ export default function QueryPage() {
       };
       setHistory((prev) => [historyItem, ...prev]);
     } catch (err) {
+      console.error("[v0] Query execution error:", err);
       setError(
         err instanceof Error ? err.message : "An unexpected error occurred"
       );
