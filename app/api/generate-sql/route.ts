@@ -1,7 +1,8 @@
 import { generateText, Output } from "ai";
 import { z } from "zod";
 import { getSchemaDescription } from "@/lib/demo-database";
-import { executeQuery, validateQuery } from "@/lib/query-executor";
+import { executeQuery } from "@/lib/query-executor";
+import { validateQuery } from "@/lib/query-validator";
 
 const sqlResultSchema = z.object({
   sql: z.string().describe("The generated SQL query"),
