@@ -39,8 +39,12 @@ async function getDatabase() {
 
   if (!initPromise) {
     initPromise = (async () => {
-      const SQL = await initSqlJs();
-      const initSqlJsFunc = SQL;
+      console.log("[v0] Initializing sql.js");
+      const initSqlJsFunc = await initSqlJs();
+      const SQL = await initSqlJsFunc({
+        locateFile: (file: string) => `https://sql.js.org/dist/${file}`
+      });
+      console.log("[v0] sql.js initialized, creating database");
       const database = new SQL.Database();
 
       // Initialize schema and data
@@ -216,6 +220,8 @@ async function getDatabase() {
         database.run("INSERT INTO orders VALUES (?, ?, ?, ?, ?, ?, ?)", o);
       }
 
+      console.log("[v0] Database fully initialized and seeded");
+      cachedDatabase = database;
       return database;
     })();
   }
@@ -224,17 +230,24 @@ async function getDatabase() {
 }
 
 export async function executeQuery(sql: string): Promise<QueryResult> {
+  console.log("[v0] executeQuery called with SQL:", sql);
+  
   const validation = validateQuery(sql);
   if (!validation.valid) {
+    console.error("[v0] Query validation failed:", validation.error);
     throw new Error(validation.error);
   }
 
+  console.log("[v0] Query validated, getting database");
   const database = await getDatabase();
+  console.log("[v0] Database ready, executing query");
+  
   const startTime = performance.now();
 
   try {
     const results = database.exec(sql);
     const executionTimeMs = Math.round((performance.now() - startTime) * 100) / 100;
+    console.log("[v0] Query executed in", executionTimeMs, "ms, result sets:", results.length);
 
     if (results.length === 0) {
       return {
