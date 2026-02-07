@@ -14,6 +14,39 @@ const sqlResultSchema = z.object({
     .describe("Estimated number of rows that will be returned"),
 });
 
+// Retry helper with exponential backoff
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries = 2,
+  initialDelay = 1000
+): Promise<T> {
+  let lastError: Error | undefined;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error as Error;
+      
+      // Don't retry on client errors (400s)
+      if (error instanceof Error && 'statusCode' in error) {
+        const statusCode = (error as any).statusCode;
+        if (statusCode >= 400 && statusCode < 500) {
+          throw error;
+        }
+      }
+      
+      if (attempt < maxRetries) {
+        const delay = initialDelay * Math.pow(2, attempt);
+        console.log(`[v0] Retry attempt ${attempt + 1} after ${delay}ms`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  
+  throw lastError;
+}
+
 export async function POST(req: Request) {
   try {
     const { question } = await req.json();
@@ -27,13 +60,17 @@ export async function POST(req: Request) {
 
     const schemaDescription = getSchemaDescription();
 
-    const { output } = await generateText({
-      model: "anthropic/claude-sonnet-4-20250514",
-      output: Output.object({ schema: sqlResultSchema }),
-      messages: [
-        {
-          role: "user",
-          content: `You are an expert SQL assistant. Given the following database schema and a natural language question, generate a valid SQLite SELECT query.
+    console.log("[v0] Generating SQL for question:", question);
+
+    const { output } = await retryWithBackoff(async () => {
+      return await generateText({
+        model: "anthropic/claude-sonnet-4-20250514",
+        output: Output.object({ schema: sqlResultSchema }),
+        maxOutputTokens: 1000,
+        messages: [
+          {
+            role: "user",
+            content: `You are an expert SQL assistant. Given the following database schema and a natural language question, generate a valid SQLite SELECT query.
 
 ${schemaDescription}
 
@@ -50,20 +87,25 @@ RULES:
 User question: ${question}
 
 Generate the SQL query and explain what it does in simple terms.`,
-        },
-      ],
+          },
+        ],
+      });
     });
 
     if (!output) {
+      console.error("[v0] No output received from AI");
       return Response.json(
-        { error: "Failed to generate SQL query" },
+        { error: "Failed to generate SQL query. Please try again." },
         { status: 500 }
       );
     }
 
+    console.log("[v0] Generated SQL:", output.sql);
+
     // Validate the generated SQL
     const validation = validateQuery(output.sql);
     if (!validation.valid) {
+      console.error("[v0] Query validation failed:", validation.error);
       return Response.json(
         {
           error: `Generated unsafe query: ${validation.error}`,
@@ -75,7 +117,9 @@ Generate the SQL query and explain what it does in simple terms.`,
     }
 
     // Execute the query
+    console.log("[v0] Executing validated query");
     const queryResult = await executeQuery(output.sql);
+    console.log("[v0] Query executed successfully, rows:", queryResult.rowCount);
 
     return Response.json({
       sql: output.sql,
@@ -85,12 +129,25 @@ Generate the SQL query and explain what it does in simple terms.`,
       result: queryResult,
     });
   } catch (error) {
-    console.error("Query generation error:", error);
+    console.error("[v0] Query generation error:", error);
+    
+    // Provide more specific error messages
+    let errorMessage = "An unexpected error occurred. Please try again.";
+    
+    if (error instanceof Error) {
+      if (error.message.includes("timeout") || error.message.includes("Timeout")) {
+        errorMessage = "The AI service is taking too long to respond. Please try a simpler question or try again in a moment.";
+      } else if (error.message.includes("Gateway")) {
+        errorMessage = "Unable to connect to AI service. Please check your connection and try again.";
+      } else if (error.message.includes("rate limit")) {
+        errorMessage = "Too many requests. Please wait a moment and try again.";
+      } else {
+        errorMessage = error.message;
+      }
+    }
+    
     return Response.json(
-      {
-        error:
-          error instanceof Error ? error.message : "An unexpected error occurred",
-      },
+      { error: errorMessage },
       { status: 500 }
     );
   }
